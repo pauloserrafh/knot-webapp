@@ -28,6 +28,7 @@ class App extends Component {
         },
         getData: { ownerUuid: "", ownerToken: "", thingUuid: "", itemId: "" },
         getDevices: { ownerUuid: "", ownerToken: "", gateway: "" },
+        subscribe: { ownerUuid: "", ownerToken: "", thingUuid: "" },
     };
     this._onChangeSetConfig = this._onChangeSetConfig.bind(this);
     this.setConfig = this.setConfig.bind(this);
@@ -37,6 +38,8 @@ class App extends Component {
     this.getData = this.getData.bind(this);
     this._onChangeGetDevices = this._onChangeGetDevices.bind(this);
     this.getDevices = this.getDevices.bind(this);
+    this._onChangeSubscribe = this._onChangeSubscribe.bind(this);
+    this.subscribe = this.subscribe.bind(this);
   }
 
   _onChangeSetConfig = function(e) {
@@ -60,7 +63,11 @@ class App extends Component {
     getDevices[e.target.name] = e.target.value;
     this.setState({ getDevices: getDevices });
   };
-
+  _onChangeSubscribe = function(e) {
+    const subscribe = this.state.subscribe;
+    subscribe[e.target.name] = e.target.value;
+    this.setState({ subscribe: subscribe });
+  };
   setConfig = function(e) {
     e.preventDefault();
   };
@@ -74,6 +81,9 @@ class App extends Component {
   };
 
   getDevices = function(e) {
+    e.preventDefault();
+  };
+  subscribe = function(e) {
     e.preventDefault();
   };
   render() {
@@ -389,6 +399,60 @@ class App extends Component {
             </Table>
             <Button bsStyle="primary" onClick={this.getDevices}>
               Get Devices
+            </Button>
+          </form>
+        </Panel>
+        <Panel key={5} collapsible header="Subscribe">
+          <form>
+            <Table responsive>
+              <thead>
+                <tr>
+                  <th>Parameter</th>
+                  <th>Value</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Owner UUID</td>
+                  <td>
+                    <FormControl
+                      type="text"
+                      value={this.state.subscribe.ownerUuid}
+                      name="ownerUuid"
+                      onChange={this._onChangeSubscribe}
+                    />
+                  </td>
+                  <td>Owner's UUID</td>
+                </tr>
+                <tr>
+                  <td>Owner Token</td>
+                  <td>
+                    <FormControl
+                      type="text"
+                      value={this.state.subscribe.ownerToken}
+                      name="ownerToken"
+                      onChange={this._onChangeSubscribe}
+                    />
+                  </td>
+                  <td>Owner's Token</td>
+                </tr>
+                <tr>
+                  <td>Thing UUID</td>
+                  <td>
+                    <FormControl
+                      type="text"
+                      value={this.state.subscribe.thingUuid}
+                      name="thingUuid"
+                      onChange={this._onChangeSubscribe}
+                    />
+                  </td>
+                  <td>Thing UUID</td>
+                </tr>
+              </tbody>
+            </Table>
+            <Button bsStyle="primary" onClick={this.subscribe}>
+              Subscribe
             </Button>
           </form>
         </Panel>
