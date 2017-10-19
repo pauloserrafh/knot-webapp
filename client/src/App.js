@@ -17,11 +17,20 @@ class App extends Component {
           timeSec: "",
           lowerLimit: "",
           upperLimit: ""
-        }
-      ,
+        },
+        setData:
+        {
+          ownerUuid: "",
+          ownerToken: "",
+          thingUuid: "",
+          itemId: "",
+          itemData: ""
+        },
     };
     this._onChangeSetConfig = this._onChangeSetConfig.bind(this);
     this.setConfig = this.setConfig.bind(this);
+    this._onChangeSetData = this._onChangeSetData.bind(this);
+    this.setData = this.setData.bind(this);
   }
 
   _onChangeSetConfig = function(e) {
@@ -30,8 +39,17 @@ class App extends Component {
     this.setState({ setConfig: setConfig });
   };
 
+  _onChangeSetData = function(e) {
+    const setData = this.state.setData;
+    setData[e.target.name] = e.target.value;
+    this.setState({ setData: setData });
+  };
+
   setConfig = function(e) {
-    console.log(this.state.setConfig);
+    e.preventDefault();
+  };
+
+  setData = function(e) {
     e.preventDefault();
   };
   render() {
@@ -152,7 +170,84 @@ class App extends Component {
             </Button>
           </form>
         </Panel>
-
+        <Panel key={2} collapsible header="Set Data">
+          <form>
+            <Table responsive>
+              <thead>
+                <tr>
+                  <th>Parameter</th>
+                  <th>Value</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Owner UUID</td>
+                  <td>
+                    <FormControl
+                      type="text"
+                      value={this.state.setData.ownerUuid}
+                      name="ownerUuid"
+                      onChange={this._onChangeSetData}
+                    />
+                  </td>
+                  <td>Owner's UUID</td>
+                </tr>
+                <tr>
+                  <td>Owner Token</td>
+                  <td>
+                    <FormControl
+                      type="text"
+                      value={this.state.setData.ownerToken}
+                      name="ownerToken"
+                      onChange={this._onChangeSetData}
+                    />
+                  </td>
+                  <td>Owner's Token</td>
+                </tr>
+                <tr>
+                  <td>Thing UUID</td>
+                  <td>
+                    <FormControl
+                      type="text"
+                      value={this.state.setData.thingUuid}
+                      name="thingUuid"
+                      onChange={this._onChangeSetData}
+                    />
+                  </td>
+                  <td>Thing UUID</td>
+                </tr>
+                <tr>
+                  <td>Item ID</td>
+                  <td>
+                    <FormControl
+                      type="text"
+                      value={this.state.setData.itemId}
+                      name="itemId"
+                      onChange={this._onChangeSetData}
+                    />
+                  </td>
+                  <td>Id for the item to apply config</td>
+                </tr>
+                <tr>
+                  <td>Item Data</td>
+                  <td>
+                    <FormControl
+                      type="text"
+                      value={this.state.setData.itemData}
+                      name="itemData"
+                      onChange={this._onChangeSetData}
+                    />
+                  </td>
+                  <td>Value to be set</td>
+                </tr>
+              </tbody>
+            </Table>
+            <Button bsStyle="primary" onClick={this.setData}>
+              Set Data
+            </Button>
+          </form>
+          </Panel>
       </div>
     );
   }
