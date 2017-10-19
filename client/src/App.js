@@ -27,6 +27,7 @@ class App extends Component {
           itemData: ""
         },
         getData: { ownerUuid: "", ownerToken: "", thingUuid: "", itemId: "" },
+        getDevices: { ownerUuid: "", ownerToken: "", gateway: "" },
     };
     this._onChangeSetConfig = this._onChangeSetConfig.bind(this);
     this.setConfig = this.setConfig.bind(this);
@@ -34,6 +35,8 @@ class App extends Component {
     this.setData = this.setData.bind(this);
     this._onChangeGetData = this._onChangeGetData.bind(this);
     this.getData = this.getData.bind(this);
+    this._onChangeGetDevices = this._onChangeGetDevices.bind(this);
+    this.getDevices = this.getDevices.bind(this);
   }
 
   _onChangeSetConfig = function(e) {
@@ -52,6 +55,11 @@ class App extends Component {
     getData[e.target.name] = e.target.value;
     this.setState({ getData: getData });
   };
+  _onChangeGetDevices = function(e) {
+    const getDevices = this.state.getDevices;
+    getDevices[e.target.name] = e.target.value;
+    this.setState({ getDevices: getDevices });
+  };
 
   setConfig = function(e) {
     e.preventDefault();
@@ -62,6 +70,10 @@ class App extends Component {
   };
 
   getData = function(e) {
+    e.preventDefault();
+  };
+
+  getDevices = function(e) {
     e.preventDefault();
   };
   render() {
@@ -323,6 +335,60 @@ class App extends Component {
             </Table>
             <Button bsStyle="primary" onClick={this.getData}>
               Get Data
+            </Button>
+          </form>
+        </Panel>
+        <Panel key={4} collapsible header="Get Devices">
+          <form>
+            <Table responsive>
+              <thead>
+                <tr>
+                  <th>Parameter</th>
+                  <th>Value</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Owner UUID</td>
+                  <td>
+                    <FormControl
+                      type="text"
+                      value={this.state.getDevices.ownerUuid}
+                      name="ownerUuid"
+                      onChange={this._onChangeGetDevices}
+                    />
+                  </td>
+                  <td>Owner's UUID</td>
+                </tr>
+                <tr>
+                  <td>Owner Token</td>
+                  <td>
+                    <FormControl
+                      type="text"
+                      value={this.state.getDevices.ownerToken}
+                      name="ownerToken"
+                      onChange={this._onChangeGetDevices}
+                    />
+                  </td>
+                  <td>Owner's Token</td>
+                </tr>
+                <tr>
+                  <td>Gateway</td>
+                  <td>
+                    <FormControl
+                      type="text"
+                      value={this.state.getDevices.gateway}
+                      name="gateway"
+                      onChange={this._onChangeGetDevices}
+                    />
+                  </td>
+                  <td>Gateway</td>
+                </tr>
+              </tbody>
+            </Table>
+            <Button bsStyle="primary" onClick={this.getDevices}>
+              Get Devices
             </Button>
           </form>
         </Panel>
