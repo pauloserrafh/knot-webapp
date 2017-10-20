@@ -21,7 +21,8 @@ class App extends Component {
           evtFlags: "",
           timeSec: "",
           lowerLimit: "",
-          upperLimit: ""
+          upperLimit: "",
+          response : ""
         },
         setData:
         {
@@ -79,6 +80,33 @@ class App extends Component {
     this.setState({ defaultConfigs: defaultConfigs });
   };
   setConfig = function(e) {
+    const setConfig = this.state.setConfig;
+    const request = {
+      ownerUuid : this.state.defaultConfigs.ownerUuid,
+      ownerToken : this.state.defaultConfigs.ownerToken,
+      hostname : this.state.defaultConfigs.hostname,
+      port : this.state.defaultConfigs.port,
+      thingUuid : this.state.setConfig.thingUuid,
+      itemId : this.state.setConfig.itemId,
+      evtFlags : this.state.setConfig.evtFlags,
+      timeSec : this.state.setConfig.timeSec,
+      lowerLimit : this.state.setConfig.lowerLimit,
+      upperLimit : this.state.setConfig.upperLimit
+    }
+    fetch('/sendConfig', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(request)
+
+  }).then(res => res.json())
+    .then(function(json) {
+      setConfig['response'] = JSON.stringify(json, null, 3);
+      console.log(json);
+      this.setState({ setConfig: setConfig});
+     }.bind(this));
     e.preventDefault();
   };
 
@@ -166,9 +194,7 @@ class App extends Component {
   subscribe = function(e) {
     e.preventDefault();
   };
-  subscribe = function(e) {
-    e.preventDefault();
-  };
+
   render() {
     return (
       <div className="App">
@@ -308,7 +334,7 @@ class App extends Component {
                       name="upperLimit"
                       value={this.state.setConfig.upperLimit}
                       onChange={this._onChangeSetConfig}
-                    />
+                     />
                   </td>
                   <td>Upper Limit</td>
                 </tr>
@@ -318,6 +344,10 @@ class App extends Component {
               Set Config
             </Button>
           </form>
+          <b>Set config Response:</b>
+          <Panel>
+            <p>{this.state.setConfig.response}</p>
+          </Panel>
         </Panel>
         <Panel key={2} collapsible header="Set Data">
           <form>
