@@ -9,6 +9,7 @@ var index = require('./routes/index');
 var getDevices = require('./routes/getDevices');
 var httpGetDevices = require('./routes/httpGetDevices');
 var setData = require('./routes/setData');
+var getData = require('./routes/getData');
 
 var app = express();
 
@@ -28,6 +29,7 @@ app.use('/', index);
 app.use('/getDevices', getDevices);
 app.use('/httpGetDevices', httpGetDevices);
 app.use('/setData', setData);
+app.use('/getData', getData);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
