@@ -27,7 +27,7 @@ class App extends Component {
           itemData: ""
         },
         getData: { ownerUuid: "", ownerToken: "", thingUuid: "", itemId: "" },
-        getDevices: { ownerUuid: "", ownerToken: "", gateway: "" },
+        getDevices: { ownerUuid: "", ownerToken: "", gateway: "", response: "" },
         subscribe: { ownerUuid: "", ownerToken: "", thingUuid: "" },
     };
     this._onChangeSetConfig = this._onChangeSetConfig.bind(this);
@@ -81,6 +81,24 @@ class App extends Component {
   };
 
   getDevices = function(e) {
+    const getDevices = this.state.getDevices;
+    fetch('/getDevices', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(this.state.getDevices)
+  }).then(res => res.json())
+    .then(function(json) {
+      getDevices['response'] = JSON.stringify(json, null, 3);
+      console.log(json);
+      this.setState({ getDevices: getDevices});
+     }.bind(this));
+    e.preventDefault();
+  };
+
+  subscribe = function(e) {
     e.preventDefault();
   };
   subscribe = function(e) {
@@ -401,6 +419,10 @@ class App extends Component {
               Get Devices
             </Button>
           </form>
+          <b>Get Devices Response:</b>
+         <Panel >
+          <p>{this.state.getDevices.response}</p>
+        </Panel>
         </Panel>
         <Panel key={5} collapsible header="Subscribe">
           <form>
