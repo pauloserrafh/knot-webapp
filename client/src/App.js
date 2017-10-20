@@ -1,16 +1,21 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Panel, Button, Table, FormControl } from "react-bootstrap";
+import { Panel, Button, Table, FormControl, FormGroup, ControlLabel, Form, Col } from "react-bootstrap";
 
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      defaultConfigs :
+      {
+        ownerUuid : "",
+        ownerToken : "",
+        hostname : "knot-test.cesar.org.br",
+        port : "3000",
+      } ,
       setConfig:
         {
-          ownerUuid: "",
-          ownerToken: "",
           thingUuid: "",
           itemId: "",
           evtFlags: "",
@@ -20,15 +25,13 @@ class App extends Component {
         },
         setData:
         {
-          ownerUuid: "",
-          ownerToken: "",
           thingUuid: "",
           itemId: "",
           itemData: ""
         },
-        getData: { ownerUuid: "", ownerToken: "", thingUuid: "", itemId: "" },
-        getDevices: { ownerUuid: "", ownerToken: "", gateway: "", response: "" },
-        subscribe: { ownerUuid: "", ownerToken: "", thingUuid: "" },
+        getData: { thingUuid: "", itemId: "" },
+        getDevices: { gateway: "", response: "" },
+        subscribe: { thingUuid: "" },
     };
     this._onChangeSetConfig = this._onChangeSetConfig.bind(this);
     this.setConfig = this.setConfig.bind(this);
@@ -40,6 +43,7 @@ class App extends Component {
     this.getDevices = this.getDevices.bind(this);
     this._onChangeSubscribe = this._onChangeSubscribe.bind(this);
     this.subscribe = this.subscribe.bind(this);
+    this._onChangeDefaultConfigs= this._onChangeDefaultConfigs.bind(this);
   }
 
   _onChangeSetConfig = function(e) {
@@ -68,6 +72,11 @@ class App extends Component {
     subscribe[e.target.name] = e.target.value;
     this.setState({ subscribe: subscribe });
   };
+  _onChangeDefaultConfigs = function(e) {
+    const defaultConfigs = this.state.defaultConfigs;
+    defaultConfigs[e.target.name] = e.target.value;
+    this.setState({ defaultConfigs: defaultConfigs });
+  };
   setConfig = function(e) {
     e.preventDefault();
   };
@@ -82,13 +91,21 @@ class App extends Component {
 
   getDevices = function(e) {
     const getDevices = this.state.getDevices;
+    const request = {
+      ownerUuid : this.state.defaultConfigs.ownerUuid,
+      ownerToken : this.state.defaultConfigs.ownerToken,
+      hostname : this.state.defaultConfigs.hostname,
+      port : this.state.defaultConfigs.port,
+      gateway : this.state.getDevices.gateway
+    }
     fetch('/getDevices', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(this.state.getDevices)
+    body: JSON.stringify(request)
+
   }).then(res => res.json())
     .then(function(json) {
       getDevices['response'] = JSON.stringify(json, null, 3);
@@ -108,6 +125,62 @@ class App extends Component {
     return (
       <div className="App">
       <h1>KNoT Sample App</h1>
+        <Panel header="Configurations">
+          <Form horizontal>
+            <FormGroup controlId="formHorizontalEmail">
+              <Col componentClass={ControlLabel} sm={2}>
+                Owner UUID
+              </Col>
+              <Col sm={10}>
+                <FormControl
+                  type="text"
+                  name="ownerUuid"
+                  value={this.state.defaultConfigs.ownerUuid}
+                  onChange={this._onChangeDefaultConfigs}
+                />
+              </Col>
+            </FormGroup>
+            <FormGroup controlId="formHorizontalEmail">
+              <Col componentClass={ControlLabel} sm={2}>
+                Owner Token
+              </Col>
+              <Col sm={10}>
+                <FormControl
+                  type="text"
+                  name="ownerToken"
+                  value={this.state.defaultConfigs.ownerToken}
+                  onChange={this._onChangeDefaultConfigs}
+                />
+              </Col>
+            </FormGroup>
+            <FormGroup controlId="formHorizontalEmail">
+              <Col componentClass={ControlLabel} sm={2}>
+                Hostname
+              </Col>
+              <Col sm={10}>
+                <FormControl
+                  type="text"
+                  name="hostname"
+                  value={this.state.defaultConfigs.hostname}
+                  onChange={this._onChangeDefaultConfigs}
+                />
+              </Col>
+            </FormGroup>
+            <FormGroup controlId="formHorizontalEmail">
+              <Col componentClass={ControlLabel} sm={2}>
+                Owner UUID
+              </Col>
+              <Col sm={10}>
+                <FormControl
+                  type="text"
+                  name="port"
+                  value={this.state.defaultConfigs.port}
+                  onChange={this._onChangeDefaultConfigs}
+                />
+              </Col>
+            </FormGroup>
+          </Form>
+        </Panel>
         <Panel key={1} collapsible header="Set Config">
           <form>
             <Table responsive>
@@ -119,30 +192,6 @@ class App extends Component {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>Owner UUID</td>
-                  <td>
-                    <FormControl
-                      type="text"
-                      name="ownerUuid"
-                      value={this.state.setConfig.ownerUuid}
-                      onChange={this._onChangeSetConfig}
-                    />
-                  </td>
-                  <td>Owner's UUID</td>
-                </tr>
-                <tr>
-                  <td>Owner Token</td>
-                  <td>
-                    <FormControl
-                      type="text"
-                      name="ownerToken"
-                      value={this.state.setConfig.ownerToken}
-                      onChange={this._onChangeSetConfig}
-                    />
-                  </td>
-                  <td>Owner's Token</td>
-                </tr>
                 <tr>
                   <td>Thing UUID</td>
                   <td>
@@ -234,30 +283,6 @@ class App extends Component {
               </thead>
               <tbody>
                 <tr>
-                  <td>Owner UUID</td>
-                  <td>
-                    <FormControl
-                      type="text"
-                      value={this.state.setData.ownerUuid}
-                      name="ownerUuid"
-                      onChange={this._onChangeSetData}
-                    />
-                  </td>
-                  <td>Owner's UUID</td>
-                </tr>
-                <tr>
-                  <td>Owner Token</td>
-                  <td>
-                    <FormControl
-                      type="text"
-                      value={this.state.setData.ownerToken}
-                      name="ownerToken"
-                      onChange={this._onChangeSetData}
-                    />
-                  </td>
-                  <td>Owner's Token</td>
-                </tr>
-                <tr>
                   <td>Thing UUID</td>
                   <td>
                     <FormControl
@@ -312,30 +337,6 @@ class App extends Component {
               </thead>
               <tbody>
                 <tr>
-                  <td>Owner UUID</td>
-                  <td>
-                    <FormControl
-                      type="text"
-                      value={this.state.getData.ownerUuid}
-                      name="ownerUuid"
-                      onChange={this._onChangeGetData}
-                    />
-                  </td>
-                  <td>Owner's UUID</td>
-                </tr>
-                <tr>
-                  <td>Owner Token</td>
-                  <td>
-                    <FormControl
-                      type="text"
-                      value={this.state.getData.ownerToken}
-                      name="ownerToken"
-                      onChange={this._onChangeGetData}
-                    />
-                  </td>
-                  <td>Owner's Token</td>
-                </tr>
-                <tr>
                   <td>Thing UUID</td>
                   <td>
                     <FormControl
@@ -378,30 +379,6 @@ class App extends Component {
               </thead>
               <tbody>
                 <tr>
-                  <td>Owner UUID</td>
-                  <td>
-                    <FormControl
-                      type="text"
-                      value={this.state.getDevices.ownerUuid}
-                      name="ownerUuid"
-                      onChange={this._onChangeGetDevices}
-                    />
-                  </td>
-                  <td>Owner's UUID</td>
-                </tr>
-                <tr>
-                  <td>Owner Token</td>
-                  <td>
-                    <FormControl
-                      type="text"
-                      value={this.state.getDevices.ownerToken}
-                      name="ownerToken"
-                      onChange={this._onChangeGetDevices}
-                    />
-                  </td>
-                  <td>Owner's Token</td>
-                </tr>
-                <tr>
                   <td>Gateway</td>
                   <td>
                     <FormControl
@@ -435,30 +412,6 @@ class App extends Component {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>Owner UUID</td>
-                  <td>
-                    <FormControl
-                      type="text"
-                      value={this.state.subscribe.ownerUuid}
-                      name="ownerUuid"
-                      onChange={this._onChangeSubscribe}
-                    />
-                  </td>
-                  <td>Owner's UUID</td>
-                </tr>
-                <tr>
-                  <td>Owner Token</td>
-                  <td>
-                    <FormControl
-                      type="text"
-                      value={this.state.subscribe.ownerToken}
-                      name="ownerToken"
-                      onChange={this._onChangeSubscribe}
-                    />
-                  </td>
-                  <td>Owner's Token</td>
-                </tr>
                 <tr>
                   <td>Thing UUID</td>
                   <td>
