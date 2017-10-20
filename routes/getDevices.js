@@ -40,14 +40,20 @@ meshblu.on("notReady", function(response) {
     });
   }
 });
+
 /* GET Devices from a gateway. */
 router.post("/", function(req, res, next) {
+  console.log(req.body);
+  const hostname = req.body.hostname;
+  const port = req.body.port;
   const uuid = req.body.ownerUuid;
   const token = req.body.ownerToken;
   const gateway = req.body.gateway;
 
   if (uuid === "" || token === "" || gateway === "")
     res.send({ status: "Please provide all required values." });
+  meshblu["_options"].hostname = hostname;
+  meshblu["_options"].port = port;
   meshblu["_options"].uuid = uuid;
   meshblu["_options"].token = token;
 
