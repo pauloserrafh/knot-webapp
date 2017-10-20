@@ -30,7 +30,7 @@ class App extends Component {
           itemData: "",
           response: ""
         },
-        getData: { thingUuid: "", itemId: "" },
+        getData: { thingUuid: "", itemId: "", response: "" },
         getDevices: { gateway: "", response: "" },
         subscribe: { thingUuid: "" },
     };
@@ -111,6 +111,29 @@ class App extends Component {
   };
 
   getData = function(e) {
+    const getData = this.state.getData;
+    const request = {
+      ownerUuid : this.state.defaultConfigs.ownerUuid,
+      ownerToken : this.state.defaultConfigs.ownerToken,
+      hostname : this.state.defaultConfigs.hostname,
+      port : this.state.defaultConfigs.port,
+      thingUuid : this.state.getData.thingUuid,
+      itemId : this.state.getData.itemId
+    }
+    fetch('/getData', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(request)
+
+  }).then(res => res.json())
+    .then(function(json) {
+      getData['response'] = JSON.stringify(json, null, 3);
+      console.log(json);
+      this.setState({ getData: getData});
+     }.bind(this));
     e.preventDefault();
   };
 
@@ -395,6 +418,10 @@ class App extends Component {
               Get Data
             </Button>
           </form>
+          <b>Get Data Response:</b>
+          <Panel>
+            <p>{this.state.getData.response}</p>
+          </Panel>
         </Panel>
         <Panel key={4} collapsible header="Get Devices">
           <form>
