@@ -27,7 +27,8 @@ class App extends Component {
         {
           thingUuid: "",
           itemId: "",
-          itemData: ""
+          itemData: "",
+          response: ""
         },
         getData: { thingUuid: "", itemId: "" },
         getDevices: { gateway: "", response: "" },
@@ -82,6 +83,30 @@ class App extends Component {
   };
 
   setData = function(e) {
+    const setData = this.state.setData;
+    const request = {
+      ownerUuid : this.state.defaultConfigs.ownerUuid,
+      ownerToken : this.state.defaultConfigs.ownerToken,
+      hostname : this.state.defaultConfigs.hostname,
+      port : this.state.defaultConfigs.port,
+      thingUuid : this.state.setData.thingUuid,
+      itemId : this.state.setData.itemId,
+      itemData : this.state.setData.itemData
+    }
+    fetch('/setData', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(request)
+
+  }).then(res => res.json())
+    .then(function(json) {
+      setData['response'] = JSON.stringify(json, null, 3);
+      console.log(json);
+      this.setState({ setData: setData});
+     }.bind(this));
     e.preventDefault();
   };
 
@@ -324,6 +349,10 @@ class App extends Component {
               Set Data
             </Button>
           </form>
+          <b>Set Data Response:</b>
+          <Panel>
+            <p>{this.state.setData.response}</p>
+          </Panel>
         </Panel>
         <Panel key={3} collapsible header="Get Data">
           <form>
