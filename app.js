@@ -10,6 +10,7 @@ var getDevices = require('./routes/getDevices');
 var httpGetDevices = require('./routes/httpGetDevices');
 var setData = require('./routes/setData');
 var getData = require('./routes/getData');
+var sendConfig = require('./routes/sendConfig');
 
 var app = express();
 
@@ -30,6 +31,7 @@ app.use('/getDevices', getDevices);
 app.use('/httpGetDevices', httpGetDevices);
 app.use('/setData', setData);
 app.use('/getData', getData);
+app.use('/sendConfig', sendConfig);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
