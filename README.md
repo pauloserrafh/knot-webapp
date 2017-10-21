@@ -13,9 +13,9 @@ There are five operations defined:
 In order to run:
 ```
 $ npm install (or yarn install)
-$ PORT=3001 node bin/www
+$ PORT=3003 node bin/www
 ```
-This will start the backend API on port 3001. If you want to use another port make sure to change the proxy property on the package.json inside the client/ folder
+This will start the backend API on port 3003. If you want to use another port make sure to change the proxy property on the package.json inside the client/ folder
 
 Open another terminal and run the following commands:
 ```
@@ -24,5 +24,5 @@ $ npm install (or yarn install)
 $ npm start (or yarn start)
 ```
 
-This will start the frontend on port 3000
+This will start the frontend on port 3002
 
