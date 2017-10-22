@@ -1,39 +1,45 @@
-import React, { Component } from 'react';
-import './App.css';
-import { Panel, Button, Table, FormControl, FormGroup, ControlLabel, Form, Col } from "react-bootstrap";
+import React, { Component } from "react";
+import "./App.css";
+import {
+  Panel,
+  Button,
+  Table,
+  FormControl,
+  FormGroup,
+  ControlLabel,
+  Form,
+  Col
+} from "react-bootstrap";
 
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      defaultConfigs :
-      {
-        ownerUuid : "",
-        ownerToken : "",
-        hostname : "knot-test.cesar.org.br",
-        port : "3000",
-      } ,
-      setConfig:
-        {
-          thingUuid: "",
-          itemId: "",
-          evtFlags: "",
-          timeSec: "",
-          lowerLimit: "",
-          upperLimit: "",
-          response : ""
-        },
-        setData:
-        {
-          thingUuid: "",
-          itemId: "",
-          itemData: "",
-          response: ""
-        },
-        getData: { thingUuid: "", itemId: "", response: "" },
-        getDevices: { gateway: "", response: "" },
-        subscribe: { thingUuid: "" },
+      defaultConfigs: {
+        ownerUuid: "",
+        ownerToken: "",
+        hostname: "knot-test.cesar.org.br",
+        port: "3000"
+      },
+      setConfig: {
+        thingUuid: "",
+        itemId: "",
+        evtFlags: "",
+        timeSec: "",
+        lowerLimit: "",
+        upperLimit: "",
+        response: ""
+      },
+      setData: {
+        thingUuid: "",
+        itemId: "",
+        itemData: "",
+        response: ""
+      },
+      getData: { thingUuid: "", itemId: "", response: "" },
+      getDevices: { gateway: "", response: "" },
+      subscribe: { thingUuid: "", response: "" }
     };
     this._onChangeSetConfig = this._onChangeSetConfig.bind(this);
     this.setConfig = this.setConfig.bind(this);
@@ -45,7 +51,7 @@ class App extends Component {
     this.getDevices = this.getDevices.bind(this);
     this._onChangeSubscribe = this._onChangeSubscribe.bind(this);
     this.subscribe = this.subscribe.bind(this);
-    this._onChangeDefaultConfigs= this._onChangeDefaultConfigs.bind(this);
+    this._onChangeDefaultConfigs = this._onChangeDefaultConfigs.bind(this);
   }
 
   _onChangeSetConfig = function(e) {
@@ -82,123 +88,155 @@ class App extends Component {
   setConfig = function(e) {
     const setConfig = this.state.setConfig;
     const request = {
-      ownerUuid : this.state.defaultConfigs.ownerUuid,
-      ownerToken : this.state.defaultConfigs.ownerToken,
-      hostname : this.state.defaultConfigs.hostname,
-      port : this.state.defaultConfigs.port,
-      thingUuid : this.state.setConfig.thingUuid,
-      itemId : this.state.setConfig.itemId,
-      evtFlags : this.state.setConfig.evtFlags,
-      timeSec : this.state.setConfig.timeSec,
-      lowerLimit : this.state.setConfig.lowerLimit,
-      upperLimit : this.state.setConfig.upperLimit
-    }
-    fetch('/sendConfig', {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(request)
-
-  }).then(res => res.json())
-    .then(function(json) {
-      setConfig['response'] = JSON.stringify(json, null, 3);
-      console.log(json);
-      this.setState({ setConfig: setConfig});
-     }.bind(this));
+      ownerUuid: this.state.defaultConfigs.ownerUuid,
+      ownerToken: this.state.defaultConfigs.ownerToken,
+      hostname: this.state.defaultConfigs.hostname,
+      port: this.state.defaultConfigs.port,
+      thingUuid: this.state.setConfig.thingUuid,
+      itemId: this.state.setConfig.itemId,
+      evtFlags: this.state.setConfig.evtFlags,
+      timeSec: this.state.setConfig.timeSec,
+      lowerLimit: this.state.setConfig.lowerLimit,
+      upperLimit: this.state.setConfig.upperLimit
+    };
+    fetch("/sendConfig", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(request)
+    })
+      .then(res => res.json())
+      .then(
+        function(json) {
+          setConfig["response"] = JSON.stringify(json, null, 3);
+          console.log(json);
+          this.setState({ setConfig: setConfig });
+        }.bind(this)
+      );
     e.preventDefault();
   };
 
   setData = function(e) {
     const setData = this.state.setData;
     const request = {
-      ownerUuid : this.state.defaultConfigs.ownerUuid,
-      ownerToken : this.state.defaultConfigs.ownerToken,
-      hostname : this.state.defaultConfigs.hostname,
-      port : this.state.defaultConfigs.port,
-      thingUuid : this.state.setData.thingUuid,
-      itemId : this.state.setData.itemId,
-      itemData : this.state.setData.itemData
-    }
-    fetch('/setData', {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(request)
-
-  }).then(res => res.json())
-    .then(function(json) {
-      setData['response'] = JSON.stringify(json, null, 3);
-      console.log(json);
-      this.setState({ setData: setData});
-     }.bind(this));
+      ownerUuid: this.state.defaultConfigs.ownerUuid,
+      ownerToken: this.state.defaultConfigs.ownerToken,
+      hostname: this.state.defaultConfigs.hostname,
+      port: this.state.defaultConfigs.port,
+      thingUuid: this.state.setData.thingUuid,
+      itemId: this.state.setData.itemId,
+      itemData: this.state.setData.itemData
+    };
+    fetch("/setData", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(request)
+    })
+      .then(res => res.json())
+      .then(
+        function(json) {
+          setData["response"] = JSON.stringify(json, null, 3);
+          console.log(json);
+          this.setState({ setData: setData });
+        }.bind(this)
+      );
     e.preventDefault();
   };
 
   getData = function(e) {
     const getData = this.state.getData;
     const request = {
-      ownerUuid : this.state.defaultConfigs.ownerUuid,
-      ownerToken : this.state.defaultConfigs.ownerToken,
-      hostname : this.state.defaultConfigs.hostname,
-      port : this.state.defaultConfigs.port,
-      thingUuid : this.state.getData.thingUuid,
-      itemId : this.state.getData.itemId
-    }
-    fetch('/getData', {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(request)
-
-  }).then(res => res.json())
-    .then(function(json) {
-      getData['response'] = JSON.stringify(json, null, 3);
-      console.log(json);
-      this.setState({ getData: getData});
-     }.bind(this));
+      ownerUuid: this.state.defaultConfigs.ownerUuid,
+      ownerToken: this.state.defaultConfigs.ownerToken,
+      hostname: this.state.defaultConfigs.hostname,
+      port: this.state.defaultConfigs.port,
+      thingUuid: this.state.getData.thingUuid,
+      itemId: this.state.getData.itemId
+    };
+    fetch("/getData", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(request)
+    })
+      .then(res => res.json())
+      .then(
+        function(json) {
+          getData["response"] = JSON.stringify(json, null, 3);
+          console.log(json);
+          this.setState({ getData: getData });
+        }.bind(this)
+      );
     e.preventDefault();
   };
 
   getDevices = function(e) {
     const getDevices = this.state.getDevices;
     const request = {
-      ownerUuid : this.state.defaultConfigs.ownerUuid,
-      ownerToken : this.state.defaultConfigs.ownerToken,
-      hostname : this.state.defaultConfigs.hostname,
-      port : this.state.defaultConfigs.port,
-      gateway : this.state.getDevices.gateway
-    }
-    fetch('/getDevices', {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(request)
-
-  }).then(res => res.json())
-    .then(function(json) {
-      getDevices['response'] = JSON.stringify(json, null, 3);
-      console.log(json);
-      this.setState({ getDevices: getDevices});
-     }.bind(this));
+      ownerUuid: this.state.defaultConfigs.ownerUuid,
+      ownerToken: this.state.defaultConfigs.ownerToken,
+      hostname: this.state.defaultConfigs.hostname,
+      port: this.state.defaultConfigs.port,
+      gateway: this.state.getDevices.gateway
+    };
+    fetch("/getDevices", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(request)
+    })
+      .then(res => res.json())
+      .then(
+        function(json) {
+          getDevices["response"] = JSON.stringify(json, null, 3);
+          console.log(json);
+          this.setState({ getDevices: getDevices });
+        }.bind(this)
+      );
     e.preventDefault();
   };
 
   subscribe = function(e) {
+    const subscribe = this.state.subscribe;
+    const request = {
+      ownerUuid: this.state.defaultConfigs.ownerUuid,
+      ownerToken: this.state.defaultConfigs.ownerToken,
+      hostname: this.state.defaultConfigs.hostname,
+      port: this.state.defaultConfigs.port,
+      thingUuid: this.state.subscribe.thingUuid
+    };
+    fetch("/subscribe", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(request)
+    })
+      .then(res => res.json())
+      .then(
+        function(json) {
+          subscribe["response"] = JSON.stringify(json, null, 3);
+          console.log(json);
+          this.setState({ subscribe: subscribe });
+        }.bind(this)
+      );
     e.preventDefault();
   };
 
   render() {
     return (
       <div className="App">
-      <h1>KNoT Sample App</h1>
+        <h1>KNoT Sample App</h1>
         <Panel header="Configurations">
           <Form horizontal>
             <FormGroup controlId="formHorizontalEmail">
@@ -334,7 +372,7 @@ class App extends Component {
                       name="upperLimit"
                       value={this.state.setConfig.upperLimit}
                       onChange={this._onChangeSetConfig}
-                     />
+                    />
                   </td>
                   <td>Upper Limit</td>
                 </tr>
@@ -483,9 +521,9 @@ class App extends Component {
             </Button>
           </form>
           <b>Get Devices Response:</b>
-         <Panel >
-          <p>{this.state.getDevices.response}</p>
-        </Panel>
+          <Panel>
+            <p>{this.state.getDevices.response}</p>
+          </Panel>
         </Panel>
         <Panel key={5} collapsible header="Subscribe">
           <form>
@@ -516,6 +554,10 @@ class App extends Component {
               Subscribe
             </Button>
           </form>
+          <b>Subscribe Response:</b>
+          <Panel>
+            <p>{this.state.subscribe.response}</p>
+          </Panel>
         </Panel>
       </div>
     );
