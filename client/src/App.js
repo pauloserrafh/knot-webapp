@@ -158,7 +158,7 @@ class App extends Component {
       thingUuid: this.state.getData.thingUuid,
       itemId: this.state.getData.itemId
     };
-    fetch("/getData", {
+    fetch("/httpGetData", {
       method: "POST",
       headers: {
         Accept: "application/json",
