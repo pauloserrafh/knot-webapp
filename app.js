@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var socketio = require("socket.io");
 
 var index = require('./routes/index');
 var getDevices = require('./routes/getDevices');
@@ -16,6 +17,10 @@ var httpGetData = require('./routes/httpGetData');
 var httpSetData = require('./routes/httpSetData');
 
 var app = express();
+
+var io = socketio();
+app.io = io;
+var httpSubscribe = require('./routes/httpSubscribe')(io);
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -38,6 +43,7 @@ app.use("/sendConfig", sendConfig);
 app.use("/subscribe", subscribe);
 app.use('/httpGetData', httpGetData);
 app.use('/httpSetData', httpSetData);
+app.use('/httpSubscribe', httpSubscribe);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -55,6 +61,12 @@ app.use(function(err, req, res, next) {
 	// render the error page
 	res.status(err.status || 500);
 	res.render("error");
+});
+
+// socket.io events
+io.on( "connection", function( socket )
+{
+    console.log( "A user connected" );
 });
 
 module.exports = app;
