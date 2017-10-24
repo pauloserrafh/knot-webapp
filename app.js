@@ -13,6 +13,7 @@ var getData = require('./routes/getData');
 var sendConfig = require('./routes/sendConfig');
 var subscribe = require("./routes/subscribe");
 var httpGetData = require('./routes/httpGetData');
+var httpSetData = require('./routes/httpSetData');
 
 var app = express();
 
@@ -36,6 +37,7 @@ app.use("/getData", getData);
 app.use("/sendConfig", sendConfig);
 app.use("/subscribe", subscribe);
 app.use('/httpGetData', httpGetData);
+app.use('/httpSetData', httpSetData);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
