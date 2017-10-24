@@ -9,7 +9,8 @@ import {
   Col,
   Table,
   Button,
-  Image
+  Image,
+  Row
 } from "react-bootstrap";
 import openSocket from 'socket.io-client';
 const socket = openSocket('http://localhost:3003');
@@ -228,12 +229,16 @@ class App extends Component {
       thingUuid: subscribe.thingUuid
     };
     socket.on(subscribe.thingUuid, function(response) {
-      console.log(response);
-      subscribe.response += "\n\n"+response;
       response = JSON.parse(response);
-      if(response.payload.value === "false")
+      response = {
+        value: response.payload.value,
+        timestamp : response.payload.timestamp
+      }
+      subscribe.response = JSON.stringify(response, null, 3);
+
+      if(response.value === "false")
           this.setState({ isOn: false });
-      if(response.payload.value === "true")
+      if(response.value === "true")
           this.setState({ isOn: true });
 
       this.setState({ subscribe: subscribe });
@@ -244,12 +249,11 @@ class App extends Component {
 
   render() {
     const isOn = this.state.isOn;
-    console.log("###########");
     let image = null;
     if (isOn) {
-      image = <Image src={require('./images/on.jpg')} rounded />;
+      image = <Image src={require('./images/on.png')} rounded />;
     } else {
-      image = <Image src={require('./images/off.jpg')} rounded />;
+      image = <Image src={require('./images/off.png')} rounded />;
     }
     return (
       <div className="App">
@@ -278,32 +282,6 @@ class App extends Component {
                   type="text"
                   name="ownerToken"
                   value={this.state.defaultConfigs.ownerToken}
-                  onChange={this._onChangeDefaultConfigs}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup controlId="formHorizontalEmail">
-              <Col componentClass={ControlLabel} sm={2}>
-                Hostname
-              </Col>
-              <Col sm={10}>
-                <FormControl
-                  type="text"
-                  name="hostname"
-                  value={this.state.defaultConfigs.hostname}
-                  onChange={this._onChangeDefaultConfigs}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup controlId="formHorizontalEmail">
-              <Col componentClass={ControlLabel} sm={2}>
-                Port
-              </Col>
-              <Col sm={10}>
-                <FormControl
-                  type="text"
-                  name="port"
-                  value={this.state.defaultConfigs.port}
                   onChange={this._onChangeDefaultConfigs}
                 />
               </Col>
@@ -469,7 +447,14 @@ class App extends Component {
           </form>
           <b>Set Data Response:</b>
           <Panel>
-            <p>{this.state.setData.response}</p>
+            <Row>
+              <Col xs={12} md={8}>
+                <p>{this.state.setData.response}</p>
+              </Col>
+              <Col xs={6} md={4}>
+                {image}
+              </Col>
+            </Row>
           </Panel>
         </Panel>
         <Panel key={4} collapsible header="Subscribe">
@@ -503,9 +488,8 @@ class App extends Component {
           </form>
           <b>Subscribe Response:</b>
           <Panel className="ScrollStyle">
-            <p>{this.state.subscribe.response}</p>
+              <p>{this.state.subscribe.response}</p>
           </Panel>
-          {image}
         </Panel>
       </div>
     );
