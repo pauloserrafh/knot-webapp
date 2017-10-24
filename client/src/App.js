@@ -8,7 +8,8 @@ import {
   Form,
   Col,
   Table,
-  Button
+  Button,
+  Image
 } from "react-bootstrap";
 import openSocket from 'socket.io-client';
 const socket = openSocket('http://localhost:3003');
@@ -42,6 +43,7 @@ class App extends Component {
       getData: { thingUuid: "", itemId: "", response: "" },
       getDevices: { gateway: "", response: "" },
       subscribe: { thingUuid: "", response: "" },
+      isOn: false,
     };
     this._onChangeSetConfig = this._onChangeSetConfig.bind(this);
     this.setConfig = this.setConfig.bind(this);
@@ -228,6 +230,11 @@ class App extends Component {
     socket.on(subscribe.thingUuid, function(response) {
       console.log(response);
       subscribe.response += "\n\n"+response;
+      response = JSON.parse(response);
+      if(response.payload.value === "false")
+          this.setState({ isOn: false });
+      if(response.payload.value === "true")
+          this.setState({ isOn: true });
 
       this.setState({ subscribe: subscribe });
     }.bind(this));
@@ -236,6 +243,14 @@ class App extends Component {
   };
 
   render() {
+    const isOn = this.state.isOn;
+    console.log("###########");
+    let image = null;
+    if (isOn) {
+      image = <Image src={require('./images/on.jpg')} rounded />;
+    } else {
+      image = <Image src={require('./images/off.jpg')} rounded />;
+    }
     return (
       <div className="App">
         <h1>KNoT Sample App</h1>
@@ -490,6 +505,7 @@ class App extends Component {
           <Panel className="ScrollStyle">
             <p>{this.state.subscribe.response}</p>
           </Panel>
+          {image}
         </Panel>
       </div>
     );
