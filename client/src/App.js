@@ -10,6 +10,8 @@ import {
   Table,
   Button
 } from "react-bootstrap";
+import openSocket from 'socket.io-client';
+const socket = openSocket('http://localhost:3003');
 
 class App extends Component {
   constructor(props) {
@@ -39,6 +41,7 @@ class App extends Component {
       },
       getData: { thingUuid: "", itemId: "", response: "" },
       getDevices: { gateway: "", response: "" },
+      subscribe: { thingUuid: "", response: "" },
     };
     this._onChangeSetConfig = this._onChangeSetConfig.bind(this);
     this.setConfig = this.setConfig.bind(this);
@@ -49,6 +52,8 @@ class App extends Component {
     this._onChangeGetDevices = this._onChangeGetDevices.bind(this);
     this.getDevices = this.getDevices.bind(this);
     this._onChangeDefaultConfigs = this._onChangeDefaultConfigs.bind(this);
+    this._onChangeSubscribe = this._onChangeSubscribe.bind(this);
+    this.subscribe = this.subscribe.bind(this);
   }
 
   _onChangeSetConfig = function(e) {
@@ -76,6 +81,11 @@ class App extends Component {
     const defaultConfigs = this.state.defaultConfigs;
     defaultConfigs[e.target.name] = e.target.value;
     this.setState({ defaultConfigs: defaultConfigs });
+  };
+  _onChangeSubscribe = function(e) {
+    const subscribe = this.state.subscribe;
+    subscribe[e.target.name] = e.target.value;
+    this.setState({ subscribe: subscribe });
   };
   setConfig = function(e) {
     const setConfig = this.state.setConfig;
@@ -203,6 +213,25 @@ class App extends Component {
           this.setState({ getDevices: getDevices });
         }.bind(this)
       );
+    e.preventDefault();
+  };
+
+  subscribe = function(e) {
+    const subscribe = this.state.subscribe;
+    const request = {
+      ownerUuid: this.state.defaultConfigs.ownerUuid,
+      ownerToken: this.state.defaultConfigs.ownerToken,
+      hostname: this.state.defaultConfigs.hostname,
+      port: this.state.defaultConfigs.port,
+      thingUuid: subscribe.thingUuid
+    };
+    socket.on(subscribe.thingUuid, function(response) {
+      console.log(response);
+      subscribe.response += "\n\n"+response;
+
+      this.setState({ subscribe: subscribe });
+    }.bind(this));
+    socket.emit('httpSubscribe', request);
     e.preventDefault();
   };
 
@@ -360,7 +389,17 @@ class App extends Component {
             <p>{this.state.setConfig.response}</p>
           </Panel>
         </Panel>
-        <Panel key={2} collapsible header="Set Data">
+        <Panel key={2} collapsible header="Get Devices">
+            <Button bsStyle="primary" onClick={this.getDevices}>
+              Get Devices
+            </Button>
+            <br/>
+          <b>Get Devices Response:</b>
+          <Panel>
+            <p>{this.state.getDevices.response}</p>
+          </Panel>
+        </Panel>
+        <Panel key={3} collapsible header="Set Data">
           <form>
             <Table responsive>
               <thead>
@@ -418,13 +457,38 @@ class App extends Component {
             <p>{this.state.setData.response}</p>
           </Panel>
         </Panel>
-        <Panel key={4} collapsible header="Get Devices">
-            <Button bsStyle="primary" onClick={this.getDevices}>
-              Get Devices
+        <Panel key={4} collapsible header="Subscribe">
+          <form>
+            <Table responsive>
+              <thead>
+                <tr>
+                  <th>Parameter</th>
+                  <th>Value</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Thing UUID</td>
+                  <td>
+                    <FormControl
+                      type="text"
+                      value={this.state.subscribe.thingUuid}
+                      name="thingUuid"
+                      onChange={this._onChangeSubscribe}
+                    />
+                  </td>
+                  <td>Thing UUID</td>
+                </tr>
+              </tbody>
+            </Table>
+            <Button bsStyle="primary" onClick={this.subscribe}>
+              Subscribe
             </Button>
-          <b>Get Devices Response:</b>
-          <Panel>
-            <p>{this.state.getDevices.response}</p>
+          </form>
+          <b>Subscribe Response:</b>
+          <Panel className="ScrollStyle">
+            <p>{this.state.subscribe.response}</p>
           </Panel>
         </Panel>
       </div>
