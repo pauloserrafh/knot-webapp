@@ -44,7 +44,8 @@ class App extends Component {
       getData: { thingUuid: "", itemId: "", response: "" },
       getDevices: { gateway: "", response: "" },
       subscribe: { thingUuid: "", response: "" },
-      isOn: false,
+      isOn: true,
+      isBreak2: true,
     };
     this._onChangeSetConfig = this._onChangeSetConfig.bind(this);
     this.setConfig = this.setConfig.bind(this);
@@ -230,16 +231,26 @@ class App extends Component {
     };
     socket.on(subscribe.thingUuid, function(response) {
       response = JSON.parse(response);
+      console.log(response);
       response = {
+        id: response.payload.sensor_id,
         value: response.payload.value,
         timestamp : response.payload.timestamp
       }
       subscribe.response = JSON.stringify(response, null, 3);
+      if(response.id === "1") {
+        if(response.value === "false")
+            this.setState({ isOn: false });
+        if(response.value === "true")
+            this.setState({ isOn: true });
+      }
 
-      if(response.value === "false")
-          this.setState({ isOn: false });
-      if(response.value === "true")
-          this.setState({ isOn: true });
+      if(response.id === "2") {
+        if(response.value === "false")
+            this.setState({ isBreak2: false });
+        if(response.value === "true")
+            this.setState({ isBreak2: true });
+      }
 
       this.setState({ subscribe: subscribe });
     }.bind(this));
@@ -249,11 +260,19 @@ class App extends Component {
 
   render() {
     const isOn = this.state.isOn;
+    const isBreak2 = this.state.isBreak2;
     let image = null;
+    let image2 = null;
+    console.log(isOn);
     if (isOn) {
-      image = <Image src={require('./images/on.png')} rounded />;
+      image = <Image src={require('./images/Infrared-Beam-Sensor-off.png')} rounded />;
     } else {
-      image = <Image src={require('./images/off.png')} rounded />;
+      image = <Image src={require('./images/Infrared-Beam-Sensor-on.png')} rounded />;
+    }
+    if (isBreak2) {
+      image2 = <Image src={require('./images/Infrared-Beam-Sensor-off.png')} rounded />;
+    } else {
+      image2 = <Image src={require('./images/Infrared-Beam-Sensor-on.png')} rounded />;
     }
     return (
       <div className="App">
@@ -392,71 +411,6 @@ class App extends Component {
             <p>{this.state.getDevices.response}</p>
           </Panel>
         </Panel>
-        <Panel key={3} collapsible header="Set Data">
-          <form>
-            <Table responsive>
-              <thead>
-                <tr>
-                  <th>Parameter</th>
-                  <th>Value</th>
-                  <th>Description</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Thing UUID</td>
-                  <td>
-                    <FormControl
-                      type="text"
-                      value={this.state.setData.thingUuid}
-                      name="thingUuid"
-                      onChange={this._onChangeSetData}
-                    />
-                  </td>
-                  <td>Thing UUID</td>
-                </tr>
-                <tr>
-                  <td>Item ID</td>
-                  <td>
-                    <FormControl
-                      type="text"
-                      value={this.state.setData.itemId}
-                      name="itemId"
-                      onChange={this._onChangeSetData}
-                    />
-                  </td>
-                  <td>Id for the item to apply config</td>
-                </tr>
-                <tr>
-                  <td>Item Data</td>
-                  <td>
-                    <FormControl
-                      type="text"
-                      value={this.state.setData.itemData}
-                      name="itemData"
-                      onChange={this._onChangeSetData}
-                    />
-                  </td>
-                  <td>Value to be set</td>
-                </tr>
-              </tbody>
-            </Table>
-            <Button bsStyle="primary" onClick={this.setData}>
-              Set Data
-            </Button>
-          </form>
-          <b>Set Data Response:</b>
-          <Panel>
-            <Row>
-              <Col xs={12} md={8}>
-                <p>{this.state.setData.response}</p>
-              </Col>
-              <Col xs={6} md={4}>
-                {image}
-              </Col>
-            </Row>
-          </Panel>
-        </Panel>
         <Panel key={4} collapsible header="Subscribe">
           <form>
             <Table responsive>
@@ -488,7 +442,16 @@ class App extends Component {
           </form>
           <b>Subscribe Response:</b>
           <Panel className="ScrollStyle">
-              <p>{this.state.subscribe.response}</p>
+              <Row>
+               <Col xs={12} md={8}>
+                  <p><b>Sensor 1</b></p>
+                 {image}
+               </Col>
+              <Col xs={6} md={4}>
+                <p><b>Sensor 2</b></p>
+                {image2}
+              </Col>
+            </Row>
           </Panel>
         </Panel>
       </div>
